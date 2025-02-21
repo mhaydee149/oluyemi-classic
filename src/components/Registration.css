@@ -1,0 +1,114 @@
+/* src/components/Registration.css */
+
+.registration-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f4f4f4;
+}
+
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.registration-form {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  font-size: 1rem;
+  color: #555;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.input-field:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.register-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.register-btn:hover {
+  background-color: #0056b3;
+}
+.switch-page {
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.switch-page a {
+  color: blue;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.switch-page a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 20px;
+  }
+  
+  header nav a {
+    margin-right: 10px;
+    font-size: 14px;
+  }
+  
+  .container {
+    width: 95%;
+    padding: 10px;
+  }
+  
+  .payment-container {
+    margin: 20px auto;
+    padding: 20px;
+  }
+  
+  .payment-form {
+    gap: 15px;
+  }
+  
+  .input-field {
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  .payment-btn {
+    font-size: 14px;
+    padding: 12px;
+  }
+  
+  footer p {
+    font-size: 12px;
+  }
+}

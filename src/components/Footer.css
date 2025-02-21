@@ -1,0 +1,76 @@
+.footer {
+  background-color: #222;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  margin-top: 20px;
+}
+
+.footer .social-icons {
+  margin-top: 10px;
+}
+
+.footer .social-icons a {
+  color: white;
+  margin: 0 10px;
+  font-size: 1.5rem;
+  transition: color 0.3s;
+}
+
+.footer .social-icons a:hover {
+  color: #ffcc00;
+}
+
+
+footer {
+  background: #333;
+  color: #ddd;
+  text-align: center;
+  padding: 10px 20px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  margin-top: 20px;
+}
+
+footer p {
+  font-size: 14px;
+}
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 20px;
+  }
+  
+  header nav a {
+    margin-right: 10px;
+    font-size: 14px;
+  }
+  
+  .container {
+    width: 95%;
+    padding: 10px;
+  }
+  
+  .payment-container {
+    margin: 20px auto;
+    padding: 20px;
+  }
+  
+  .payment-form {
+    gap: 15px;
+  }
+  
+  .input-field {
+    font-size: 14px;
+    padding: 10px;
+  }
+  
+  .payment-btn {
+    font-size: 14px;
+    padding: 12px;
+  }
+  
+  footer p {
+    font-size: 12px;
+  }
+}
