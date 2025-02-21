@@ -12,11 +12,14 @@ const Registration = () => {
     event.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/oluyemi_backend/register.php", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      });
+      const response = await fetch(
+        "https://oluyemi-classic-production.up.railway.app/register.php",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, email, password }),
+        }
+      );
 
       const data = await response.json();
 
@@ -75,7 +78,6 @@ const Registration = () => {
 
         <button type="submit" className="register-btn">Register</button>
 
-        {/* Link to Login Page */}
         <p className="switch-page">
           Already have an account? <Link to="/login">Login now</Link>
         </p>
