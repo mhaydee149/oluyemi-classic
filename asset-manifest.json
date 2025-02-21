@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/oluyemi-classic/static/css/main.4bb17119.css",
+    "main.js": "/oluyemi-classic/static/js/main.6899a4e9.js",
+    "index.html": "/oluyemi-classic/index.html",
+    "main.4bb17119.css.map": "/oluyemi-classic/static/css/main.4bb17119.css.map",
+    "main.6899a4e9.js.map": "/oluyemi-classic/static/js/main.6899a4e9.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.4bb17119.css",
+    "static/js/main.6899a4e9.js"
+  ]
+}
