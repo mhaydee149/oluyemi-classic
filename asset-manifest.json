@@ -1,13 +1,13 @@
 {
   "files": {
-    "main.css": "/oluyemi-classic/static/css/main.42e47235.css",
-    "main.js": "/oluyemi-classic/static/js/main.ee5c9ad3.js",
+    "main.css": "/oluyemi-classic/static/css/main.053f3666.css",
+    "main.js": "/oluyemi-classic/static/js/main.65f61ddb.js",
     "index.html": "/oluyemi-classic/index.html",
-    "main.42e47235.css.map": "/oluyemi-classic/static/css/main.42e47235.css.map",
-    "main.ee5c9ad3.js.map": "/oluyemi-classic/static/js/main.ee5c9ad3.js.map"
+    "main.053f3666.css.map": "/oluyemi-classic/static/css/main.053f3666.css.map",
+    "main.65f61ddb.js.map": "/oluyemi-classic/static/js/main.65f61ddb.js.map"
   },
   "entrypoints": [
-    "static/css/main.42e47235.css",
-    "static/js/main.ee5c9ad3.js"
+    "static/css/main.053f3666.css",
+    "static/js/main.65f61ddb.js"
   ]
 }
