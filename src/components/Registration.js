@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from "react"; 
 import { useNavigate, Link } from "react-router-dom";
 import "./Registration.css";
 
@@ -11,15 +11,25 @@ const Registration = () => {
   const handleRegister = async (event) => {
     event.preventDefault();
 
+    const trimmedName = name.trim();
+    const trimmedEmail = email.trim();
+    const trimmedPassword = password.trim();
+
+    if (!trimmedName || !trimmedEmail || !trimmedPassword) {
+      alert("All fields are required!");
+      return;
+    }
+
     try {
-      const response = await fetch(
-        "https://oluyemi-classic-production.up.railway.app/register.php",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, email, password }),
-        }
-      );
+      const response = await fetch("http://oluyemiclassicit.free.nf/register.php", { 
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: trimmedName, email: trimmedEmail, password: trimmedPassword }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
 
       const data = await response.json();
 
@@ -37,7 +47,7 @@ const Registration = () => {
 
   return (
     <div className="register-container">
-      <h1>Oluyemi Classic IT.</h1>
+      <h1>Oluyemi Classic IT</h1>
       <h2>Create New Account</h2>
       <form className="register-form" onSubmit={handleRegister}>
         <div className="form-group">

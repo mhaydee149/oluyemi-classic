@@ -21,23 +21,23 @@ const Cart = () => {
   const increaseQuantity = (index) => {
     const updatedCart = [...cart];
     updatedCart[index].quantity = (updatedCart[index].quantity || 1) + 1;
-    updatedCart[index].totalPrice = updatedCart[index].quantity * parseFloat(updatedCart[index].price.replace("$", ""));
+    updatedCart[index].totalPrice = updatedCart[index].quantity * updatedCart[index].price;
     setCart(updatedCart);
   };
-
+  
   const decreaseQuantity = (index) => {
     const updatedCart = [...cart];
     if (updatedCart[index].quantity > 1) {
       updatedCart[index].quantity -= 1;
-      updatedCart[index].totalPrice = updatedCart[index].quantity * parseFloat(updatedCart[index].price.replace("$", ""));
+      updatedCart[index].totalPrice = updatedCart[index].quantity * updatedCart[index].price;
     } else {
       updatedCart.splice(index, 1);
     }
     setCart(updatedCart);
   };
-
+  
   const totalAmount = cart.reduce((total, item) =>
-    total + (parseFloat(item.price.replace('$', '')) * (item.quantity || 1)), 0
+    total + (item.price * (item.quantity || 1)), 0
   );
 
   const proceedToCheckout = () => {
@@ -48,7 +48,7 @@ const Cart = () => {
       return;
     }
     if (cart.length === 0) {
-      alert('Your cart is empty! Please add some items to the cart before proceeding.');
+      alert('Your cart is empty! Please add some items before proceeding.');
     } else {
       navigate('/checkout');
     }
@@ -66,7 +66,7 @@ const Cart = () => {
               <img src={item.image} alt={item.name} />
               <div className="cart-item-details">
                 <h3 className="cart-item-name">{item.name}</h3>
-                <p className="cart-item-price">{item.price}</p>
+                <p className="cart-item-price">₦{Number(item.price).toLocaleString()}</p>
                 <div className="quantity-controls">
                   <button onClick={() => decreaseQuantity(index)}>-</button>
                   <span>{item.quantity || 1}</span>
@@ -80,7 +80,8 @@ const Cart = () => {
               </div>
             </div>
           ))}
-          <h3>Total: ${totalAmount.toFixed(2)}</h3>
+          <h3>Total: ₦{totalAmount.toLocaleString()}</h3>
+
           <button className="clear-cart-btn" onClick={clearCart}>Clear Cart</button>
           <button className="checkout-now-btn" onClick={proceedToCheckout}>Checkout Now</button>
         </div>

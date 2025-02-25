@@ -13,6 +13,8 @@ import ContactUs from './components/ContactUs';
 import ProtectedRoute from './components/ProtectedRoute';
 import OrderConfirmation from './components/OrderConfirmation'; // Import OrderConfirmation
 import OrderPage from './components/OrderPage'; // Ensure the file exists in the correct path
+import ProductListing from './components/ProductListing'; // Import the new page
+import Profile from './components/Profile';
 
 
 const App = () => {
@@ -30,6 +32,8 @@ const App = () => {
         <Route path="/about-us" element={<AboutUs />} />
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/orders" element={<OrderPage />} />
+        <Route path="/products" element={<ProductListing />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
       
       <Footer />
