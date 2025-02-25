@@ -1,4 +1,4 @@
-.product-listing-container {
+.product-listing-container { 
   padding: 20px;
   text-align: center;
 }
@@ -10,19 +10,23 @@
   padding: 10px;
   justify-content: center;
 }
+
 .product-card {
   text-align: center;
   border: 1px solid #ddd;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .product-image {
   width: 100%;
-  max-width: 150px;
-  height: auto;
-  object-fit: contain;
+  height: 180px; /* Adjusted height for better fit */
+  object-fit: cover; /* Ensures it fills the container properly */
+  border-radius: 8px;
 }
 
 .add-to-cart-btn {
@@ -45,5 +49,123 @@
 
   .product-card {
     width: 90%;
+  }
+}
+
+/* General Home Page Styling */
+.home-container {
+  padding: 20px;
+  text-align: center;
+}
+
+/* Product List Styling */
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  padding: 10px;
+  justify-content: center;
+}
+
+.product-card {
+  text-align: center;
+  border: 1px solid #ddd;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.product-image {
+  width: 100%;
+  height: 180px; /* Adjusted height for better fit */
+  object-fit: cover; /* Ensures it fills the container properly */
+  border-radius: 8px;
+}
+
+/* Add to Cart Button */
+.add-to-cart-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Carousel Image */
+.carousel-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+}
+
+/* Legend Styling */
+.legend {
+  background: rgba(0, 0, 0, 0.6);
+  color: yellow;
+  font-size: 16px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+/* Active Navigation Styling */
+nav a.active {
+  color: yellow;
+  font-weight: bold;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+  .product-list {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
+
+  header nav a {
+    margin-right: 10px;
+    font-size: 14px;
+  }
+
+  .product-list {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  }
+
+  .carousel-image {
+    max-height: 300px;
+  }
+
+  .container {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .payment-container {
+    margin: 20px auto;
+    padding: 20px;
+  }
+
+  .payment-form {
+    gap: 15px;
+  }
+
+  .input-field {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .payment-btn {
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  footer p {
+    font-size: 12px;
   }
 }

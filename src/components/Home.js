@@ -11,11 +11,21 @@ const Home = () => {
   return (
     <div>
       {/* Carousel Section */}
-      <Carousel showArrows={false} autoPlay infiniteLoop interval={2000} showThumbs={false} showStatus={false}>
+      <Carousel 
+        showArrows={false} 
+        autoPlay 
+        infiniteLoop 
+        interval={2000} 
+        showThumbs={false} 
+        showStatus={false} 
+        showIndicators={false} // Removed dots
+      >
         {products.map((product) => (
           <div key={product.id}>
             <img src={product.image} alt={product.name} className="carousel-image" />
-            <p className="legend">{product.name} - ₦{product.price.toLocaleString()}</p>
+            <p className="legend">
+              {product.name.length > 30 ? product.name.substring(0, 30) + '...' : product.name} - ₦{product.price.toLocaleString()}
+            </p>
           </div>
         ))}
       </Carousel>
