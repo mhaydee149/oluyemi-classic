@@ -1,5 +1,6 @@
-import React, { useState } from "react"; 
+import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";  // Import Axios
 import "./Registration.css";
 
 const Registration = () => {
@@ -16,32 +17,34 @@ const Registration = () => {
     const trimmedPassword = password.trim();
 
     if (!trimmedName || !trimmedEmail || !trimmedPassword) {
-      alert("All fields are required!");
+      alert("⚠️ All fields are required!");
       return;
     }
 
+    // ✅ Debugging: Log the data being sent
+    console.log("Sending data:", JSON.stringify({ name: trimmedName, email: trimmedEmail, password: trimmedPassword }));
+
     try {
-      const response = await fetch("http://oluyemiclassicit.free.nf/register.php", { 
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: trimmedName, email: trimmedEmail, password: trimmedPassword }),
+      // Use Axios for the POST request
+      const response = await axios.post("http://localhost/oluyemi-backend/api/register", {
+        name: trimmedName,
+        email: trimmedEmail,
+        password: trimmedPassword
       });
+      
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+      // ✅ Debugging: Log the response from the server
+      console.log("Server Response:", response.data);
 
-      const data = await response.json();
-
-      if (data.success) {
-        alert("Registration successful! Please log in.");
+      if (response.data.success) {
+        alert("✅ Registration successful! Please log in.");
         navigate("/login");
       } else {
-        alert(data.error || "Registration failed.");
+        alert(`❌ ${response.data.error || "Registration failed."}`);
       }
     } catch (error) {
-      console.error("Fetch error:", error);
-      alert("An error occurred. Please try again later.");
+      console.error("Axios error:", error);
+      alert("⚠️ Server error! Please check your backend.");
     }
   };
 
@@ -61,7 +64,6 @@ const Registration = () => {
             required
           />
         </div>
-
         <div className="form-group">
           <label>Email</label>
           <input
@@ -73,7 +75,6 @@ const Registration = () => {
             required
           />
         </div>
-
         <div className="form-group">
           <label>Password</label>
           <input
@@ -85,9 +86,7 @@ const Registration = () => {
             required
           />
         </div>
-
         <button type="submit" className="register-btn">Register</button>
-
         <p className="switch-page">
           Already have an account? <Link to="/login">Login now</Link>
         </p>

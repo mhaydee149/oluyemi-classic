@@ -14,6 +14,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import OrderConfirmation from './components/OrderConfirmation'; // Import OrderConfirmation
 import OrderPage from './components/OrderPage'; // Ensure the file exists in the correct path
 import ProductListing from './components/ProductListing'; // Import the new page
+import ProductDetails from './components/ProductDetails';
 import Profile from './components/Profile';
 
 
@@ -33,6 +34,7 @@ const App = () => {
         <Route path="/contact-us" element={<ContactUs />} />
         <Route path="/orders" element={<OrderPage />} />
         <Route path="/products" element={<ProductListing />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/profile" element={<Profile />} />
       </Routes>
       
