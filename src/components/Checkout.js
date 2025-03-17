@@ -1,6 +1,7 @@
 import React from 'react';
 import { useCart } from '../CartContext';
 import { useNavigate } from 'react-router-dom';
+import { FaWhatsapp } from 'react-icons/fa'; // Import WhatsApp icon
 import './Checkout.css';
 
 const Checkout = () => {
@@ -22,6 +23,19 @@ const Checkout = () => {
     0
   );
 
+  // Generate WhatsApp message
+  const generateWhatsAppMessage = () => {
+    if (cart.length === 0) return "Hello, I want to order some products.";
+    
+    const productDetails = cart.map(item => 
+      `*${item.name}* - ₦${Number(item.price).toLocaleString()} x ${item.quantity || 1}`
+    ).join("\n");
+
+    return `Hello, I want to buy the following items:\n\n${productDetails}\n\nTotal: ₦${totalAmount.toLocaleString()}`;
+  };
+
+  const whatsappLink = `https://wa.me/2348123456789?text=${encodeURIComponent(generateWhatsAppMessage())}`;
+
   return (
     <div className="checkout-container">
       <h2>Checkout</h2>
@@ -35,13 +49,18 @@ const Checkout = () => {
               <img src={item.image} alt={item.name} className="checkout-item-image" />
               <div className="checkout-item-details">
                 <h4>{item.name}</h4>
-                <p>Price: {item.price}</p>
-                <p>Quantity: {item.quantity || 1}</p>  {/* Show correct quantity */}
+                <p>Price: ₦{Number(item.price).toLocaleString()}</p>
+                <p>Quantity: {item.quantity || 1}</p>
               </div>
             </div>
           ))}
-          <h3>Total: ${totalAmount.toFixed(2)}</h3>
+          <h3>Total: ₦{totalAmount.toLocaleString()}</h3>
           <button onClick={() => navigate('/payment')} className="checkout-btn">Proceed to Payment</button>
+
+          {/* WhatsApp Button */}
+          <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="whatsapp-btn">
+            <FaWhatsapp size={24} /> Message Us on WhatsApp
+          </a>
         </div>
       )}
     </div>

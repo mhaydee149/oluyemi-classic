@@ -1,43 +1,44 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useCart } from '../CartContext';
 import { useNavigate } from 'react-router-dom';
+import whatsappIcon from '../assets/whatsapp-icon.png';
 import './Cart.css';
 
 const Cart = () => {
   const { cart, setCart } = useCart();
   const navigate = useNavigate();
+  const sellerPhoneNumber = "2348102841046"; // Seller's WhatsApp number
+
+  useEffect(() => {
+    localStorage.setItem("cart", JSON.stringify(cart));
+  }, [cart]);
 
   const clearCart = () => {
-    setCart([]);
-    alert('Cart is now empty');
+    if (window.confirm("Are you sure you want to clear the cart?")) {
+      setCart([]);
+      alert('Cart is now empty');
+    }
   };
 
   const removeFromCart = (index) => {
-    const updatedCart = cart.filter((item, i) => i !== index);
-    setCart(updatedCart);
-    alert('One item removed from the cart');
+    if (window.confirm("Remove this item from the cart?")) {
+      const updatedCart = cart.filter((_, i) => i !== index);
+      setCart(updatedCart);
+    }
   };
 
-  const increaseQuantity = (index) => {
+  const updateQuantity = (index, change) => {
     const updatedCart = [...cart];
-    updatedCart[index].quantity = (updatedCart[index].quantity || 1) + 1;
-    updatedCart[index].totalPrice = updatedCart[index].quantity * updatedCart[index].price;
-    setCart(updatedCart);
-  };
-  
-  const decreaseQuantity = (index) => {
-    const updatedCart = [...cart];
-    if (updatedCart[index].quantity > 1) {
-      updatedCart[index].quantity -= 1;
-      updatedCart[index].totalPrice = updatedCart[index].quantity * updatedCart[index].price;
-    } else {
-      updatedCart.splice(index, 1);
+    const newQuantity = (updatedCart[index].quantity || 1) + change;
+    if (newQuantity > 0) {
+      updatedCart[index].quantity = newQuantity;
+      updatedCart[index].totalPrice = newQuantity * Number(updatedCart[index].price);
+      setCart(updatedCart);
     }
-    setCart(updatedCart);
   };
-  
+
   const totalAmount = cart.reduce((total, item) =>
-    total + (item.price * (item.quantity || 1)), 0
+    total + (Number(item.price) * (item.quantity || 1)), 0
   );
 
   const proceedToCheckout = () => {
@@ -45,13 +46,30 @@ const Cart = () => {
     if (!user) {
       alert("Please login to proceed to checkout.");
       navigate("/login");
-      return;
-    }
-    if (cart.length === 0) {
+    } else if (cart.length === 0) {
       alert('Your cart is empty! Please add some items before proceeding.');
     } else {
       navigate('/checkout');
     }
+  };
+
+  const sendWhatsAppMessage = () => {
+    if (cart.length === 0) {
+      alert("Your cart is empty. Add some products before messaging.");
+      return;
+    }
+
+    let message = "Hello, I am interested in purchasing the following products:\n\n";
+    cart.forEach((item, index) => {
+      message += `${index + 1}. ${item.name} - ₦${Number(item.price).toLocaleString()} (Qty: ${item.quantity || 1})\n`;
+      message += `Image: ${item.image}\n\n`;
+    });
+    message += `\nTotal: ₦${totalAmount.toLocaleString()}\n\nPlease let me know how to proceed.`;
+
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappURL = `https://wa.me/${sellerPhoneNumber}?text=${encodedMessage}`;
+    
+    window.open(whatsappURL, '_blank');
   };
 
   return (
@@ -68,9 +86,9 @@ const Cart = () => {
                 <h3 className="cart-item-name">{item.name}</h3>
                 <p className="cart-item-price">₦{Number(item.price).toLocaleString()}</p>
                 <div className="quantity-controls">
-                  <button onClick={() => decreaseQuantity(index)}>-</button>
+                  <button onClick={() => updateQuantity(index, -1)}>-</button>
                   <span>{item.quantity || 1}</span>
-                  <button onClick={() => increaseQuantity(index)}>+</button>
+                  <button onClick={() => updateQuantity(index, 1)}>+</button>
                 </div>
               </div>
               <div className="cart-item-actions">
@@ -84,6 +102,15 @@ const Cart = () => {
 
           <button className="clear-cart-btn" onClick={clearCart}>Clear Cart</button>
           <button className="checkout-now-btn" onClick={proceedToCheckout}>Checkout Now</button>
+
+          {/* WhatsApp Message Button */}
+          <div className="whatsapp-section">
+            <p>You can click on WhatsApp to message us with your selected product.</p>
+            <button className="whatsapp-btn" onClick={sendWhatsAppMessage}>
+            <img src={whatsappIcon} alt="WhatsApp" className="whatsapp-icon" />
+              Message on WhatsApp
+            </button>
+          </div>
         </div>
       )}
     </div>
