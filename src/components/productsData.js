@@ -135,7 +135,8 @@ const products = [
   { id: 42, name: 'New power bank', category: "accessories", price: 18000, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmcv4QWdrl1uWyOwvQlgQufog1NX60mfeyFg&s' },
   { id: 43, name: 'Oraimo Power bank', category: "accessories", price: 15000, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRh-QcD-1JMIRHcs8pEQo4YjM7k-JCVPVGLiw&s' },
   { id: 44, name: 'Power bank', category: "accessories", price: 30000, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ48dRm3uVka7Ut4p75MweJnS2hIzls7jTAyQ&s' },
-  { id: 45, name: 'MP3 speaker', category: "accessories", price: 80000, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsCNywpMz5K2X-SCWBeljK2nx2-1aviXKFOg&s' }
+  { id: 45, name: 'MP3 speaker', category: "accessories", price: 80000, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsCNywpMz5K2X-SCWBeljK2nx2-1aviXKFOg&s' },
+  { id: 46, name: 'MP3 speaker', category: "accessories", price: 80000, image: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsCNywpMz5K2X-SCWBeljK2nx2-1aviXKFOg&s' }
 ];
 
 export default products;
