@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/oluyemi-classic/static/css/main.283e367a.css",
-    "main.js": "/oluyemi-classic/static/js/main.17dcfcac.js",
+    "main.js": "/oluyemi-classic/static/js/main.67b89006.js",
     "static/media/whatsapp-icon.png": "/oluyemi-classic/static/media/whatsapp-icon.b7841ef478ed7e91ddd2.png",
     "index.html": "/oluyemi-classic/index.html",
     "main.283e367a.css.map": "/oluyemi-classic/static/css/main.283e367a.css.map",
-    "main.17dcfcac.js.map": "/oluyemi-classic/static/js/main.17dcfcac.js.map"
+    "main.67b89006.js.map": "/oluyemi-classic/static/js/main.67b89006.js.map"
   },
   "entrypoints": [
     "static/css/main.283e367a.css",
-    "static/js/main.17dcfcac.js"
+    "static/js/main.67b89006.js"
   ]
 }
