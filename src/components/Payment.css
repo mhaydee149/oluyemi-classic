@@ -206,3 +206,63 @@ label {
     font-size: 12px;
   }
 }
+.payment-container {
+  max-width: 400px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+}
+
+.payment-icons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.payment-logo {
+  width: 50px;
+  height: auto;
+  filter: grayscale(50%);
+}
+
+.payment-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.payment-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #00b87c;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.payment-btn:hover:not(:disabled) {
+  background-color: #019961;
+}
+
+.payment-btn:disabled {
+  background-color: #a5d6c5;
+  cursor: not-allowed;
+}

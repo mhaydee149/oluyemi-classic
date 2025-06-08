@@ -7,7 +7,7 @@ import './Cart.css';
 const Cart = () => {
   const { cart, setCart } = useCart();
   const navigate = useNavigate();
-  const sellerPhoneNumber = "2348102841046"; // Seller's WhatsApp number
+  const sellerPhoneNumber = "2348102841046";
 
   useEffect(() => {
     localStorage.setItem("cart", JSON.stringify(cart));
@@ -37,8 +37,8 @@ const Cart = () => {
     }
   };
 
-  const totalAmount = cart.reduce((total, item) =>
-    total + (Number(item.price) * (item.quantity || 1)), 0
+  const totalAmount = cart.reduce(
+    (total, item) => total + Number(item.price) * (item.quantity || 1), 0
   );
 
   const proceedToCheckout = () => {
@@ -103,11 +103,18 @@ const Cart = () => {
           <button className="clear-cart-btn" onClick={clearCart}>Clear Cart</button>
           <button className="checkout-now-btn" onClick={proceedToCheckout}>Checkout Now</button>
 
-          {/* WhatsApp Message Button */}
+          <button
+            className="continue-shopping-btn"
+            onClick={() => navigate('/')}
+            style={{ marginTop: '10px' }}
+          >
+            Continue Shopping
+          </button>
+
           <div className="whatsapp-section">
             <p>You can click on WhatsApp to message us with your selected product.</p>
             <button className="whatsapp-btn" onClick={sendWhatsAppMessage}>
-            <img src={whatsappIcon} alt="WhatsApp" className="whatsapp-icon" />
+              <img src={whatsappIcon} alt="WhatsApp" className="whatsapp-icon" />
               Message on WhatsApp
             </button>
           </div>

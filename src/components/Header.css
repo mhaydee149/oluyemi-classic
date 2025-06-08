@@ -1,4 +1,4 @@
-/* General Header Styles */
+/* Header styles */
 header {
   background: #4CAF50;
   color: white;
@@ -11,13 +11,22 @@ header h1 {
   margin-bottom: 10px;
 }
 
-nav {
-  margin-top: 10px;
+.nav-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 nav a {
   color: white;
-  margin: 0 15px;
   font-size: 1.1rem;
   text-decoration: none;
   font-weight: 600;
@@ -28,38 +37,33 @@ nav a:hover {
   color: #f4f4f4;
 }
 
-/* Active link styling */
 nav a.active {
-  color: yellow; /* Highlight active page */
+  color: yellow;
   font-weight: bold;
 }
 
-/* Logout button styling */
+/* Logout button */
 .logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #e74c3c;
   color: white;
-  background-color: red;
   border: none;
-  padding: 5px 10px;
+  padding: 3px 7px;    /* smaller padding */
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 12px;     /* smaller font size */
   cursor: pointer;
-  font-size: 1rem;
-  font-weight: bold;
+  transition: background-color 0.3s ease;
+  white-space: nowrap;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  header h1 {
-    font-size: 20px;
-  }
+.logout-btn:hover {
+  background-color: #c0392b;
+}
 
-  nav a {
-    margin: 0 10px;
-    font-size: 14px;
-  }
-}
-nav a.active {
-  color: yellow; /* Highlight active page */
-  font-weight: bold;
-}
+/* Floating Cart */
 .floating-cart {
   position: fixed;
   bottom: 20px;
@@ -82,15 +86,7 @@ nav a.active {
   background-color: #e65c00;
 }
 
-@media (max-width: 600px) {
-  .floating-cart {
-    bottom: 10px;
-    right: 10px;
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-}
-/* Go Up Button */
+/* Go-Up Button */
 .go-up-button {
   position: fixed;
   bottom: 15px;
@@ -116,4 +112,59 @@ nav a.active {
 
 .go-up-button:hover {
   background-color: #444;
+}
+
+/* Profile link */
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: blue;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.profile-text {
+  display: none;
+}
+
+.profile-link:hover .profile-text {
+  display: inline;
+  font-size: 14px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 20px;
+  }
+
+  nav a {
+    font-size: 14px;
+  }
+
+ .logout-btn {
+  background: #e74c3c;
+  color: #fff;
+  border: none;
+  padding: 3px 7px;
+  border-radius: 5px;
+  font-weight: 600;
+  font-size: 12px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+  background: #c0392b;
+}
+
+
+  .floating-cart {
+    bottom: 10px;
+    right: 10px;
+    font-size: 14px;
+    padding: 8px 12px;
+  }
 }

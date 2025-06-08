@@ -4,12 +4,27 @@ import { useCart } from '../CartContext';
 import products from './productsData';
 import './ProductListing.css';
 
+const Spinner = () => (
+  <div style={{
+    border: '3px solid #f3f3f3',
+    borderTop: '3px solid #3498db',
+    borderRadius: '50%',
+    width: '16px',
+    height: '16px',
+    animation: 'spin 1s linear infinite',
+    display: 'inline-block',
+    verticalAlign: 'middle',
+    marginLeft: '8px',
+  }} />
+);
+
 const ProductListing = () => {
   const { addToCart } = useCart();
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const productsPerPage = 6; // Change this number for more products per page
+  const [loadingProductId, setLoadingProductId] = useState(null); // Track loading product
+  const productsPerPage = 6; 
 
   // Filter and sort products
   const filteredProducts = products
@@ -27,6 +42,15 @@ const ProductListing = () => {
   const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
   const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+
+  const handleAddToCart = async (product) => {
+    setLoadingProductId(product.id);
+    try {
+      await addToCart(product);
+    } finally {
+      setLoadingProductId(null);
+    }
+  };
 
   return (
     <div className="product-list-container">
@@ -65,8 +89,19 @@ const ProductListing = () => {
               <h3>{product.name}</h3>
               <p className="product-price">₦{product.price.toLocaleString()}</p>
               <Link to={`/product/${product.id}`} className="details-link">View Details</Link>
-              <button className="add-to-cart-btn" onClick={() => addToCart(product)}>
-                Add to Cart
+              <button 
+                className="add-to-cart-btn" 
+                onClick={() => handleAddToCart(product)}
+                disabled={loadingProductId === product.id}
+              >
+                {loadingProductId === product.id ? (
+                  <>
+                    Adding
+                    <Spinner />
+                  </>
+                ) : (
+                  'Add to Cart'
+                )}
               </button>
             </div>
           ))
@@ -76,34 +111,40 @@ const ProductListing = () => {
       </div>
 
       {/* Pagination */}
-{totalPages > 1 && (
-  <div className="pagination">
-    <button 
-      onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
-      disabled={currentPage === 1}
-    >
-      Prev
-    </button>
+      {totalPages > 1 && (
+        <div className="pagination">
+          <button 
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+            disabled={currentPage === 1}
+          >
+            Prev
+          </button>
 
-    {[...Array(totalPages)].map((_, index) => (
-      <button 
-        key={index} 
-        onClick={() => setCurrentPage(index + 1)}
-        className={currentPage === index + 1 ? 'active' : ''}
-      >
-        {index + 1}
-      </button>
-    ))}
+          {[...Array(totalPages)].map((_, index) => (
+            <button 
+              key={index} 
+              onClick={() => setCurrentPage(index + 1)}
+              className={currentPage === index + 1 ? 'active' : ''}
+            >
+              {index + 1}
+            </button>
+          ))}
 
-    <button 
-      onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
-      disabled={currentPage === totalPages}
-    >
-      Next
-    </button>
-  </div>
-)}
+          <button 
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
 
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

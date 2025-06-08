@@ -1,12 +1,26 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";  // Import Axios
+import axios from "axios";
 import "./Registration.css";
+
+// Spinner component for inline use
+const Spinner = () => (
+  <div style={{
+    border: '3px solid #f3f3f3',
+    borderTop: '3px solid #3498db',
+    borderRadius: '50%',
+    width: '18px',
+    height: '18px',
+    animation: 'spin 1s linear infinite',
+    marginLeft: '8px',
+  }} />
+);
 
 const Registration = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (event) => {
@@ -21,31 +35,28 @@ const Registration = () => {
       return;
     }
 
-    // ✅ Debugging: Log the data being sent
-    console.log("Sending data:", JSON.stringify({ name: trimmedName, email: trimmedEmail, password: trimmedPassword }));
-
+    setLoading(true);
     try {
-      // Use Axios for the POST request
-      const response = await axios.post("http://localhost/oluyemi-backend/api/register", {
-        name: trimmedName,
-        email: trimmedEmail,
-        password: trimmedPassword
-      });
-      
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_URL}/api/auth/signup`,
+        {
+          name: trimmedName,
+          email: trimmedEmail,
+          password: trimmedPassword,
+        }
+      );
 
-      // ✅ Debugging: Log the response from the server
-      console.log("Server Response:", response.data);
-
-      if (response.data.success) {
+      if (response.data.msg === "User created successfully") {
         alert("✅ Registration successful! Please log in.");
         navigate("/login");
       } else {
-        alert(`❌ ${response.data.error || "Registration failed."}`);
+        alert(`❌ ${response.data.msg || "Registration failed."}`);
       }
     } catch (error) {
-      console.error("Axios error:", error);
-      alert("⚠️ Server error! Please check your backend.");
+      console.error("Axios error:", error.response?.data || error.message);
+      alert("⚠️ Invalid Email.");
     }
+    setLoading(false);
   };
 
   return (
@@ -62,6 +73,7 @@ const Registration = () => {
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -73,6 +85,7 @@ const Registration = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={loading}
           />
         </div>
         <div className="form-group">
@@ -84,13 +97,29 @@ const Registration = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            disabled={loading}
           />
         </div>
-        <button type="submit" className="register-btn">Register</button>
+        <button type="submit" className="register-btn" disabled={loading}>
+          {loading ? (
+            <>
+              Registering
+              <Spinner />
+            </>
+          ) : (
+            "Register"
+          )}
+        </button>
         <p className="switch-page">
           Already have an account? <Link to="/login">Login now</Link>
         </p>
       </form>
+      <style>{`
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `}</style>
     </div>
   );
 };

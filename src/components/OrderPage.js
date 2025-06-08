@@ -25,8 +25,11 @@ const OrderPage = () => {
 
   const clearOrders = () => {
     localStorage.removeItem("orders");
-    setOrders([]); // Update state to remove orders from UI
+    setOrders([]);
   };
+
+  // Filter orders by status
+  const filteredOrders = orders.filter(order => order.status === activeTab);
 
   return (
     <div className="order-container">
@@ -47,39 +50,32 @@ const OrderPage = () => {
         </button>
       </div>
 
-      {activeTab === "ongoing" && (
-        <div className="order-list">
-          {orders.length > 0 ? (
-            <>
-              <button className="clear-orders-btn" onClick={clearOrders}>
-                Clear Orders
-              </button>
-              {orders.map((order, index) => (
-                <div key={index} className="order-item">
-                  <img src={order.image} alt={order.name} />
-                  <div className="order-details">
-                    <h3>{order.name}</h3>
-                    <p>Price per unit: ${order.price}</p>
-                    <p>Quantity: {order.quantity}</p>
-                    <p>Total Price: ${order.totalPrice ? order.totalPrice.toFixed(2) : "0.00"}</p>
-                  </div>
-                </div>
-              ))}
-            </>
-          ) : (
-            <div className="no-orders">
-              <p>No ongoing orders found.</p>
-              <button className="add-to-cart-btn" onClick={() => navigate("/")}>
-                Add Gadget or Accessories to Cart
-              </button>
+      {filteredOrders.length > 0 ? (
+        <>
+          <button className="clear-orders-btn" onClick={clearOrders}>
+            Clear Orders
+          </button>
+          {filteredOrders.map((order, index) => (
+            <div key={index} className="order-item">
+              {order.image && <img src={order.image} alt={order.name} />}
+              <div className="order-details">
+                <h3>{order.name}</h3>
+                <p>Price per unit: ₦{order.price.toLocaleString()}</p>
+                <p>Quantity: {order.quantity}</p>
+                <p>Total Price: ₦{order.totalPrice.toLocaleString()}</p>
+                <p>Date: {new Date(order.date).toLocaleString()}</p>
+                <p>Status: {order.status.charAt(0).toUpperCase() + order.status.slice(1)}</p>
+                <p>Reference: {order.reference}</p>
+              </div>
             </div>
-          )}
-        </div>
-      )}
-
-      {activeTab === "completed" && (
-        <div className="order-list">
-          <p>No completed orders yet.</p>
+          ))}
+        </>
+      ) : (
+        <div className="no-orders">
+          <p>No {activeTab} orders found.</p>
+          <button className="add-to-cart-btn" onClick={() => navigate("/")}>
+            Add Gadget or Accessories to Cart
+          </button>
         </div>
       )}
     </div>

@@ -4,26 +4,33 @@ import './Profile.css';
 
 const Profile = () => {
   const navigate = useNavigate();
-  const storedUser = JSON.parse(localStorage.getItem('user'));
 
-  const [user, setUser] = useState(storedUser || {});
+  const [user, setUser] = useState({});
   const [editing, setEditing] = useState(false);
-  const [updatedUser, setUpdatedUser] = useState({ ...user });
+  const [updatedUser, setUpdatedUser] = useState({});
   const [orders, setOrders] = useState([]);
-  
+
   const [showChangePassword, setShowChangePassword] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
 
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
   useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem('user'));
+
     if (!storedUser) {
-      navigate('/login'); // Redirect if not logged in
+      navigate('/login');
       return;
     }
 
+    setUser(storedUser);
+    setUpdatedUser(storedUser);
+
     const storedOrders = JSON.parse(localStorage.getItem('orders')) || [];
     setOrders(storedOrders.filter(order => order.userEmail === storedUser?.email));
-  }, [navigate, storedUser]);
+  }, [navigate]);
 
   const handleEdit = () => setEditing(true);
 
@@ -31,7 +38,7 @@ const Profile = () => {
     setUser(updatedUser);
     localStorage.setItem('user', JSON.stringify(updatedUser));
     setEditing(false);
-    alert('Profile updated successfully!');
+    showSuccessModal('Profile updated successfully!');
   };
 
   const handleChange = (e) => {
@@ -40,7 +47,7 @@ const Profile = () => {
 
   const handleChangePassword = async () => {
     if (!currentPassword || !newPassword) {
-      alert("Please fill all fields.");
+      showSuccessModal("Please fill all fields.");
       return;
     }
 
@@ -54,15 +61,21 @@ const Profile = () => {
       const data = await response.json();
 
       if (data.success) {
-        alert("Password changed successfully!");
+        showSuccessModal("Password changed successfully!");
         setShowChangePassword(false);
       } else {
-        alert(data.error || "Incorrect current password.");
+        showSuccessModal(data.error || "Incorrect current password.");
       }
     } catch (error) {
       console.error("Fetch error:", error);
-      alert("An error occurred. Please try again later.");
+      showSuccessModal("An error occurred. Please try again later.");
     }
+  };
+
+  const showSuccessModal = (message) => {
+    setModalMessage(message);
+    setShowModal(true);
+    setTimeout(() => setShowModal(false), 3000);
   };
 
   return (
@@ -97,18 +110,24 @@ const Profile = () => {
         </div>
       )}
 
-      {/* Order History Section */}
       <h3>Order History</h3>
       {orders.length > 0 ? (
         <ul className="order-list">
           {orders.map((order, index) => (
             <li key={index} className="order-item">
-              <strong>Order #{order.id}</strong> - {order.productName} - <span className={`status ${order.status.toLowerCase()}`}>{order.status}</span>
+              <strong>Order #{order.id}</strong> - {order.productName} - 
+              <span className={`status ${order.status.toLowerCase()}`}> {order.status}</span>
             </li>
           ))}
         </ul>
       ) : (
         <p>No orders found.</p>
+      )}
+
+      {showModal && (
+        <div className="success-modal">
+          <p>{modalMessage}</p>
+        </div>
       )}
     </div>
   );
