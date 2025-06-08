@@ -53,3 +53,5 @@ coverage/
 # Optional: frontend/backend local database, uploads, etc
 frontend/backend/uploads/
 frontend/backend/db/
+
+.env
