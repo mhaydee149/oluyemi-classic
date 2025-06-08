@@ -1,2 +1,55 @@
+# Node dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+.temp/
+.cache/
+.next/
+out/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Logs
+logs/
+*.log
+
+# dotenv environment variables
 .env
-.env
+.env.*  # ignores .env.local, .env.production, etc.
+
+# OS/system files
+.DS_Store
+Thumbs.db
+
+# Editor settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# Git folder data
+.git/
+
+# Optional: Coverage and test output
+coverage/
+*.lcov
+
+# React specific
+*.tgz
+.eslintcache
+
+# Optional: frontend/backend local database, uploads, etc
+frontend/backend/uploads/
+frontend/backend/db/
