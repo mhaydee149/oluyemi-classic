@@ -23,56 +23,19 @@ const Payment = () => {
   };
 
   const onSuccess = async (reference) => {
-    console.log('[onSuccess] Payment succeeded:', reference);
+    // Note: Order creation and primary email confirmation are now handled by the backend webhook.
+    // The frontend's responsibility is to clear the cart and navigate the user.
+    console.log('[onSuccess] Payment succeeded via Paystack client:', reference);
 
-    try {
-      const orderDate = new Date().toISOString();
-      const orderReference = reference.reference;
-
-      const newOrders = cart.map(item => ({
-        id: `${orderReference}-${item.id || item.name}`,
-        name: item.name,
-        price: Number(item.price),
-        quantity: item.quantity || 1,
-        totalPrice: Number(item.price) * (item.quantity || 1),
-        image: item.image || '',
-        date: orderDate,
-        status: 'ongoing',
-        reference: orderReference,
-      }));
-
-      const existingOrders = JSON.parse(localStorage.getItem('orders')) || [];
-      const updatedOrders = [...existingOrders, ...newOrders];
-      localStorage.setItem('orders', JSON.stringify(updatedOrders));
-      console.log('[onSuccess] Orders saved locally.');
-    } catch (error) {
-      console.error('[onSuccess] Error saving orders:', error);
-    }
-
-    // Send confirmation email asynchronously without waiting
-    (async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email,
-            reference: reference.reference,
-            products: cart.map(item => item.name).join(', '),
-            date: new Date().toLocaleString(),
-            amount: totalAmount,
-          }),
-        });
-        if (!response.ok) {
-          const errText = await response.text();
-          console.error('[onSuccess] Email sending failed:', errText);
-        } else {
-          console.log('[onSuccess] Confirmation email sent.');
-        }
-      } catch (error) {
-        console.error('[onSuccess] Email sending error:', error);
-      }
-    })();
+    // TODO Future Enhancement: When addressing the "CRITICAL GAP" for webhook metadata:
+    // The `config` object for PaystackConsumer should include a `metadata` field.
+    // Example:
+    // metadata: {
+    //   userId: user?.id, // Assuming user object is available from auth context
+    //   cartItems: cart.map(item => ({ productId: item.id, name: item.name, quantity: item.quantity, price: item.price })),
+    //   // Ensure total size of metadata is within Paystack limits (usually a few KB)
+    // }
+    // This metadata will then be available in the webhook payload for accurate order creation.
 
     // Clear UI & navigate immediately
     setProcessing(false);
