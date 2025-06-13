@@ -47,50 +47,70 @@ router.post('/webhook', async (req, res) => {
         return res.sendStatus(200);
       }
 
-      // CRITICAL GAP: metadata.cartItems and metadata.userId are placeholders.
-      // The actual Paystack event data might not contain these directly in this structure.
-      // This part needs to be revisited based on how frontend sends metadata.
-      const metadata = data.metadata || {}; // Ensure metadata exists
-      const cartItems = metadata.cartItems || []; // Fallback to empty array
-      const userId = metadata.custom_fields?.find(field => field.variable_name === 'user_id')?.value || metadata.userId || null;
+      // Extract data from Paystack event
+      const metadata = data.metadata || {}; // Metadata sent from frontend
+      const { userId, cartItems, customerEmail: customerEmailFromMetadata } = metadata;
 
+      // Use customer email from metadata if available, otherwise from Paystack customer object
+      const finalCustomerEmail = customerEmailFromMetadata || customerEmail;
 
-      // Temporary Simplification: Create a basic order
-      const newOrder = new Order({
-        customerEmail: customerEmail,
+      const newOrderData = {
+        user: userId, // userId from metadata (should be valid due to protected checkout route)
+        customerEmail: finalCustomerEmail,
+        items: cartItems && Array.isArray(cartItems) ? cartItems.map(item => ({
+          name: item.name || 'N/A',
+          quantity: item.quantity || 1,
+          price: item.price || 0,
+          image: item.image || '', // Assuming image might be part of cart item data
+          productId: item.productId || null // Assuming productId is passed
+        })) : [],
         totalAmount: totalAmountNaira,
         paymentReference: paymentReference,
         paymentStatus: 'successful',
-        items: cartItems.map(item => ({ // Assuming cartItems have name, quantity, price
-          name: item.name || 'Unknown Item',
-          quantity: item.quantity || 1,
-          price: item.price || 0,
-          image: item.image || ''
-        })),
-        user: userId, // This will likely be null or incorrect without proper metadata
-        // shippingAddress can be added if available or leave empty for now
-      });
+        // shippingAddress can be added if available in metadata
+      };
 
+      // The 'user' field is required in the Order model.
+      // If userId is null or undefined here, Mongoose will throw a validation error on save,
+      // which is the desired behavior if the frontend somehow fails to send a valid userId
+      // despite the checkout process being protected.
+
+      const newOrder = new Order(newOrderData);
       await newOrder.save();
       console.log(`Order ${newOrder._id} created successfully for reference ${paymentReference}`);
 
-      // Send Confirmation Email
+      // Send Enhanced Confirmation Email
+      let itemsHtml = '<ul>';
+      if (newOrder.items && newOrder.items.length > 0) {
+        newOrder.items.forEach(item => {
+          itemsHtml += `<li>${item.name} - Qty: ${item.quantity} @ ₦${item.price.toLocaleString()}</li>`;
+        });
+      } else {
+        itemsHtml += '<li>Details of items are being processed.</li>'; // Fallback
+      }
+      itemsHtml += '</ul>';
+
       const emailHtml = `
-        <h1>Order Confirmation</h1>
-        <p>Thank you for your order!</p>
+        <h2>Order Confirmation</h2>
+        <p>Dear Customer,</p>
+        <p>Thank you for your order! We are pleased to confirm that your payment has been successful.</p>
         <p><strong>Order Reference:</strong> ${newOrder.paymentReference}</p>
         <p><strong>Total Amount Paid:</strong> ₦${newOrder.totalAmount.toLocaleString()}</p>
-        <p>We will process your order shortly.</p>
+        <p><strong>Order Date:</strong> ${new Date(newOrder.orderDate).toLocaleString()}</p>
+        <h3>Items Purchased:</h3>
+        ${itemsHtml}
+        <p>Your order will be processed shortly. You can view your order details in your account on our website.</p>
+        <p>Thank you for shopping with us!</p>
       `;
       await sendEmail({
         to: newOrder.customerEmail,
-        subject: 'Your Order Confirmation',
+        subject: 'Your Order Confirmation - Payment Successful',
         html: emailHtml,
       });
       console.log(`Order confirmation email sent to ${newOrder.customerEmail}`);
 
     } catch (err) {
-      console.error('Error processing webhook event:', err);
+      console.error('Error processing charge.success webhook event:', err);
       // Don't send 500 to Paystack if it's our internal error after acknowledging event
       // But log it for us. Paystack only cares about the 200 for event receipt.
       // If the error is before DB operation, a 500 might be okay, but Paystack will retry.

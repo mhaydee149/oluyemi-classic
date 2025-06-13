@@ -9,6 +9,7 @@ const Payment = () => {
   const [email, setEmail] = useState('');
   const [processing, setProcessing] = useState(false);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user')); // Get user info
 
   const totalAmount = cart.reduce(
     (total, item) => total + Number(item.price) * (item.quantity || 1),
@@ -19,29 +20,32 @@ const Payment = () => {
     reference: new Date().getTime().toString(),
     email,
     amount: totalAmount * 100, // amount in kobo for Paystack
-    publicKey: 'pk_test_8cf3b8ddf1302360895d3365e9de8327aec489e4',
+    publicKey: process.env.REACT_APP_PAYSTACK_PUBLIC_KEY,
+    metadata: {
+      userId: user ? user.id : null, // user.id should be user._id from backend
+      cartItems: cart.map(item => ({
+        productId: item.id || item.productId || null, // Prefer a stable product ID
+        name: item.name,
+        quantity: item.quantity || 1,
+        price: Number(item.price)
+      })),
+      customerEmail: email // Include customer email in metadata as well
+    }
   };
 
   const onSuccess = async (reference) => {
     // Note: Order creation and primary email confirmation are now handled by the backend webhook.
     // The frontend's responsibility is to clear the cart and navigate the user.
+    // The metadata (userId, cartItems, customerEmail) has been sent to Paystack.
     console.log('[onSuccess] Payment succeeded via Paystack client:', reference);
-
-    // TODO Future Enhancement: When addressing the "CRITICAL GAP" for webhook metadata:
-    // The `config` object for PaystackConsumer should include a `metadata` field.
-    // Example:
-    // metadata: {
-    //   userId: user?.id, // Assuming user object is available from auth context
-    //   cartItems: cart.map(item => ({ productId: item.id, name: item.name, quantity: item.quantity, price: item.price })),
-    //   // Ensure total size of metadata is within Paystack limits (usually a few KB)
-    // }
-    // This metadata will then be available in the webhook payload for accurate order creation.
 
     // Clear UI & navigate immediately
     setProcessing(false);
     setCart([]);
     localStorage.removeItem('cart');
-    navigate('/order-confirmation');
+    navigate('/order-confirmation', {
+      state: { paymentReference: reference.reference }
+    });
   };
 
   const onClose = () => {
