@@ -5,10 +5,38 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const sendEmail = require('../utils/sendEmail'); // Make sure you have this util created
+const rateLimit = require('express-rate-limit');
+
+// Rate limiter for authentication routes
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Limit each IP to 10 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
 
 // Signup
 router.post('/signup', async (req, res) => {
   const { name, email, password } = req.body;
+
+  // Input validation
+  if (!name) {
+    return res.status(400).json({ msg: 'Name is required' });
+  }
+  if (!email) {
+    return res.status(400).json({ msg: 'Email is required' });
+  }
+  if (typeof email !== 'string' || !/^\S+@\S+\.\S+$/.test(email)) {
+    return res.status(400).json({ msg: 'Invalid email format' });
+  }
+  if (!password) {
+    return res.status(400).json({ msg: 'Password is required' });
+  }
+  if (typeof password !== 'string' || password.length < 8) {
+    return res.status(400).json({ msg: 'Password must be at least 8 characters long' });
+  }
+
   try {
     const userExist = await User.findOne({ email });
     if (userExist) return res.status(400).json({ msg: "Email already in use" });
@@ -20,13 +48,29 @@ router.post('/signup', async (req, res) => {
 
     res.status(201).json({ msg: "User created successfully" });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
   }
 });
 
 // Login
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
   const { email, password } = req.body;
+
+  // Input validation
+  if (!email) {
+    return res.status(400).json({ msg: 'Email is required' });
+  }
+  if (typeof email !== 'string') {
+    return res.status(400).json({ msg: 'Invalid email format' });
+  }
+  if (!password) {
+    return res.status(400).json({ msg: 'Password is required' });
+  }
+  if (typeof password !== 'string') {
+    return res.status(400).json({ msg: 'Invalid password format' });
+  }
+
   try {
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: "User not found" });
@@ -41,15 +85,24 @@ router.post('/login', async (req, res) => {
       user: { id: user._id, name: user.name, email: user.email } 
     });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    console.error(err);
+    res.status(500).json({ msg: 'Server error' });
   }
 });
 
 // ====================
 // Forgot Password Route
 // ====================
-router.post('/forgot-password', async (req, res) => {
+router.post('/forgot-password', authLimiter, async (req, res) => {
   const { email } = req.body;
+
+  // Input validation
+  if (!email) {
+    return res.status(400).json({ msg: 'Email is required' });
+  }
+  if (typeof email !== 'string' || !/^\S+@\S+\.\S+$/.test(email)) {
+    return res.status(400).json({ msg: 'Invalid email format' });
+  }
 
   try {
     const user = await User.findOne({ email });
@@ -85,16 +138,24 @@ router.post('/forgot-password', async (req, res) => {
     res.status(200).json({ msg: 'Password reset email sent' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: 'Error sending password reset email' });
+    res.status(500).json({ msg: 'Server error' });
   }
 });
 
 // ==================
 // Reset Password Route
 // ==================
-router.post('/reset-password/:resetToken', async (req, res) => {
+router.post('/reset-password/:resetToken', authLimiter, async (req, res) => {
   const { resetToken } = req.params;
   const { password } = req.body;
+
+  // Input validation
+  if (!password) {
+    return res.status(400).json({ msg: 'Password is required' });
+  }
+  if (typeof password !== 'string' || password.length < 8) {
+    return res.status(400).json({ msg: 'Password must be at least 8 characters long' });
+  }
 
   try {
     // Find user by reset token and check if token is not expired
@@ -118,7 +179,7 @@ router.post('/reset-password/:resetToken', async (req, res) => {
     res.status(200).json({ msg: 'Password has been reset successfully' });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: 'Error resetting password' });
+    res.status(500).json({ msg: 'Server error' });
   }
 });
 
