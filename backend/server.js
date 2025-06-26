@@ -3,9 +3,7 @@ const express = require('express');
 const dotenv = require('dotenv');
 const connectDB = require('./config/db');
 const cors = require('cors');
-const emailRouter = require('./routes/email');
-const paystackWebhookRouter = require('./routes/paystackWebhook');
-const orderRoutes = require('./routes/orderRoutes');
+
 
 connectDB();
 
