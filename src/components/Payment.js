@@ -9,6 +9,7 @@ const Payment = () => {
   const [email, setEmail] = useState('');
   const [processing, setProcessing] = useState(false);
   const navigate = useNavigate();
+  const user = JSON.parse(localStorage.getItem('user')); // Get user info
 
   const totalAmount = cart.reduce(
     (total, item) => total + Number(item.price) * (item.quantity || 1),
@@ -19,66 +20,32 @@ const Payment = () => {
     reference: new Date().getTime().toString(),
     email,
     amount: totalAmount * 100, // amount in kobo for Paystack
-    publicKey: 'pk_test_8cf3b8ddf1302360895d3365e9de8327aec489e4',
+    publicKey: process.env.REACT_APP_PAYSTACK_PUBLIC_KEY,
+    metadata: {
+      userId: user ? user.id : null, // user.id should be user._id from backend
+      cartItems: cart.map(item => ({
+        productId: item.id || item.productId || null, // Prefer a stable product ID
+        name: item.name,
+        quantity: item.quantity || 1,
+        price: Number(item.price)
+      })),
+      customerEmail: email // Include customer email in metadata as well
+    }
   };
 
   const onSuccess = async (reference) => {
-    console.log('[onSuccess] Payment succeeded:', reference);
-
-    try {
-      const orderDate = new Date().toISOString();
-      const orderReference = reference.reference;
-
-      const newOrders = cart.map(item => ({
-        id: `${orderReference}-${item.id || item.name}`,
-        name: item.name,
-        price: Number(item.price),
-        quantity: item.quantity || 1,
-        totalPrice: Number(item.price) * (item.quantity || 1),
-        image: item.image || '',
-        date: orderDate,
-        status: 'ongoing',
-        reference: orderReference,
-      }));
-
-      const existingOrders = JSON.parse(localStorage.getItem('orders')) || [];
-      const updatedOrders = [...existingOrders, ...newOrders];
-      localStorage.setItem('orders', JSON.stringify(updatedOrders));
-      console.log('[onSuccess] Orders saved locally.');
-    } catch (error) {
-      console.error('[onSuccess] Error saving orders:', error);
-    }
-
-    // Send confirmation email asynchronously without waiting
-    (async () => {
-      try {
-        const response = await fetch('http://localhost:5000/api/send-email', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            email,
-            reference: reference.reference,
-            products: cart.map(item => item.name).join(', '),
-            date: new Date().toLocaleString(),
-            amount: totalAmount,
-          }),
-        });
-        if (!response.ok) {
-          const errText = await response.text();
-          console.error('[onSuccess] Email sending failed:', errText);
-        } else {
-          console.log('[onSuccess] Confirmation email sent.');
-        }
-      } catch (error) {
-        console.error('[onSuccess] Email sending error:', error);
-      }
-    })();
+    // Note: Order creation and primary email confirmation are now handled by the backend webhook.
+    // The frontend's responsibility is to clear the cart and navigate the user.
+    // The metadata (userId, cartItems, customerEmail) has been sent to Paystack.
+    console.log('[onSuccess] Payment succeeded via Paystack client:', reference);
 
     // Clear UI & navigate immediately
     setProcessing(false);
     setCart([]);
     localStorage.removeItem('cart');
-    navigate('/order-confirmation');
+    navigate('/order-confirmation', {
+      state: { paymentReference: reference.reference }
+    });
   };
 
   const onClose = () => {
